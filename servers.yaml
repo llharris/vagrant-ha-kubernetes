@@ -35,7 +35,7 @@ vms:
       - name: 30-kube-ha-master-primary.yml
       - name: 50-etcd-config.yml
       - name: 60-keepalived-master.yml
-      - name: 80-start-keepalived.yml
+      - name: 80-start-services.yml
   - name: k8s-master2
     cpu: 2
     ram: 2048
@@ -48,7 +48,7 @@ vms:
       - name: 40-kube-ha-master-secondaries.yml
       - name: 50-etcd-config.yml
       - name: 70-keepalived-secondaries.yml
-      - name: 80-start-keepalived.yml
+      - name: 80-start-services.yml
   - name: k8s-master3
     cpu: 2
     ram: 2048
@@ -61,7 +61,7 @@ vms:
       - name: 40-kube-ha-master-secondaries.yml
       - name: 50-etcd-config.yml
       - name: 70-keepalived-secondaries.yml
-      - name: 80-start-keepalived.yml
+      - name: 80-start-services.yml
   - name: k8s-worker1
     cpu: 1
     ram: 1024

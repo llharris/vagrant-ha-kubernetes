@@ -9,16 +9,10 @@
   - set_fact:
       api_server_ip: "{{ private_ip.stdout }}"
 
-  - name: Copy etcd.service template
+  - name: Copy config.yaml template
     template:
-      src: /vagrant/etcd.service.j2
-      dest: /etc/systemd/system/etcd.service    
+      src: /vagrant/config.yaml.j2
+      dest: /vagrant/config.yaml
 
   - name: Run kubeadm init
     shell: kubeadm init --config=/vagrant/config.yaml
-  
-  - name: Start etcd
-    systemd:
-      name: etcd
-      state: started
-      enabled: True
