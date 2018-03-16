@@ -2,3 +2,4 @@
 files/.kube_config_cluster.yaml
 *.log
 *.vdi
+notes.txt
