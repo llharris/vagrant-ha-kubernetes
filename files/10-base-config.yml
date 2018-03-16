@@ -1,0 +1,60 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Install useful packages
+    yum:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - net-tools
+      - ntp
+      - ntpdate
+      - wget
+      - curl
+      - mlocate
+      - bind-utils
+      - git
+      - dos2unix
+
+  - name: Set clock
+    shell: ntpdate 0.uk.pool.ntp.org && hwclock --systohc
+    ignore_errors: yes
+
+  - name: Start ntp client
+    systemd:
+      name: ntpd
+      state: started
+      enabled: true
+
+  - name: Create /root/.ssh directory
+    file:
+      path: /root/.ssh
+      state: directory
+      owner: root
+      group: root
+      mode: 0700
+  
+  - name: Copy pre-generate ssh private key
+    copy: 
+      src: /vagrant/id_rsa
+      dest: /root/.ssh/id_rsa
+      owner: root
+      group: root
+      mode: 0600
+
+  - name: Copy pre-generated ssh public key
+    copy:
+      src: /vagrant/id_rsa.pub
+      dest: /root/.ssh/id_rsa.pub
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Copy pre-generated ssh authorized_keys
+    copy:
+      src: /vagrant/authorized_keys
+      dest: /root/.ssh/authorized_keys
+      owner: root
+      group: root
+      mode: 0644

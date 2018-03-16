@@ -1,0 +1,177 @@
+---
+linked_mode: true
+
+#subnet: 192.168.33
+subnet: 192.168.34
+
+vms:
+#  - name: k8s-nfs
+#    cpu: 1
+#    ram: 512
+#    box: centos/7
+#    ip: 9
+#    storage:
+#      - size: 100
+#    provision:
+#      playbooks:
+#      - name: 10-base-config.yml
+#  - name: k8s-nginx
+#    cpu: 1
+#    ram: 512
+#    box: centos/7
+#    ip: 10
+#    provision:
+#      playbooks:
+#      - name: 10-base-config.yml
+  - name: k8s-master1
+    cpu: 2
+    ram: 2048
+    box: centos/7
+    ip: 11
+    provision:
+      playbooks:
+      - name: 10-base-config.yml
+      - name: 20-kube-base-config.yml
+      - name: 30-kube-ha-master-primary.yml
+      - name: 50-etcd-config.yml
+      - name: 60-keepalived-master.yml
+      - name: 80-start-keepalived.yml
+  - name: k8s-master2
+    cpu: 2
+    ram: 2048
+    box: centos/7
+    ip: 12
+    provision:
+      playbooks:
+      - name: 10-base-config.yml
+      - name: 20-kube-base-config.yml
+      - name: 40-kube-ha-master-secondaries.yml
+      - name: 50-etcd-config.yml
+      - name: 70-keepalived-secondaries.yml
+      - name: 80-start-keepalived.yml
+  - name: k8s-master3
+    cpu: 2
+    ram: 2048
+    box: centos/7
+    ip: 13
+    provision:
+      playbooks:
+      - name: 10-base-config.yml
+      - name: 20-kube-base-config.yml
+      - name: 40-kube-ha-master-secondaries.yml
+      - name: 50-etcd-config.yml
+      - name: 70-keepalived-secondaries.yml
+      - name: 80-start-keepalived.yml
+  - name: k8s-worker1
+    cpu: 1
+    ram: 1024
+    box: centos/7
+    ip: 14
+    provision:
+      playbooks:
+      - name: 10-base-config.yml
+      - name: 20-kube-base-config.yml
+  - name: k8s-worker2
+    cpu: 1
+    ram: 1024
+    box: centos/7
+    ip: 15
+    provision:
+      playbooks:
+      - name: 10-base-config.yml
+      - name: 20-kube-base-config.yml
+  - name: k8s-worker3
+    cpu: 1
+    ram: 1024
+    box: centos/7
+    ip: 16
+    provision:
+      playbooks:
+      - name: 10-base-config.yml
+      - name: 20-kube-base-config.yml
+#  - name: la-k8s-haproxy
+#    cpu: 1
+#    ram: 1024
+#    box: centos/7
+#    ip: 19
+#    provision:
+#      playbooks:
+#      - name: 10-base-config.yml
+#  - name: la-k8s-nfs1
+#    cpu: 1
+#    ram: 1024
+#    box: centos/7
+#    ip: 20
+#    storage:
+#      - size: 100
+#    provision:
+#      #scripts:
+#      #- name: myscript.sh
+#      playbooks:
+#      - name: 10-base-config.yml
+#  - name: la-k8s-master1
+#    cpu: 2
+#    ram: 2048
+#    box: centos/7
+#    ip: 21      
+#    provision:
+#      #scripts:
+#      #- name: scripts/pre-req.sh
+#      playbooks:
+#      - name: 10-base-config.yml
+#      #- name: 20-kube-base-config.yml
+#  - name: la-k8s-master2
+#    cpu: 2
+#    ram: 2048
+#    box: centos/7
+#    ip: 22      
+#    provision:
+#      #scripts:
+#      #- name: scripts/pre-req.sh
+#      playbooks:
+#      - name: 10-base-config.yml
+#      #- name: 20-kube-base-config.yml
+#  - name: la-k8s-master3
+#    cpu: 2
+#    ram: 2048
+#    box: centos/7
+#    ip: 23      
+#    provision:
+#      #scripts:
+#      #- name: scripts/pre-req.sh
+#      playbooks:
+#      - name: 10-base-config.yml
+#      #- name: 20-kube-base-config.yml
+#  - name: la-k8s-worker1
+#    cpu: 2
+#    ram: 2048
+#    box: centos/7
+#    ip: 24      
+#    provision:
+#      #scripts:
+#      #- name: scripts/pre-req.sh
+#      playbooks:
+#      - name: 10-base-config.yml
+#      #- name: 20-kube-base-config.yml
+#  - name: la-k8s-worker2
+#    cpu: 2
+#    ram: 2048
+#    box: centos/7
+#    ip: 25      
+#    provision:
+#      #scripts:
+#      #- name: scripts/pre-req.sh
+#      playbooks:
+#      - name: 10-base-config.yml
+#      #- name: 20-kube-base-config.yml
+#  - name: la-k8s-worker3
+#    cpu: 2
+#    ram: 2048
+#    box: centos/7
+#    ip: 26      
+#    provision:
+#      #scripts:
+#      #- name: scripts/pre-req.sh
+#      playbooks:
+#      - name: 10-base-config.yml
+#      #- name: 20-kube-base-config.yml

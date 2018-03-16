@@ -1,0 +1,91 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Install docker engine
+    yum:
+      name: docker-1.12.6-71.git3e8e77d.el7.centos.1
+      state: installed
+  
+  - name: Start docker service
+    systemd:
+      name: docker
+      state: started
+      enabled: True
+
+  - name: Copy kubernetes.repo file
+    copy:
+      src: /vagrant/kubernetes.repo
+      dest: /etc/yum.repos.d/kubernetes.repo
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Disable SELinux Temporarily
+    shell: setenforce 0
+    ignore_errors: yes
+
+  - name: Disable SELinux Permanently
+    lineinfile:
+      path: /etc/sysconfig/selinux
+      regexp: '^SELINUX='
+      line: 'SELINUX=disabled'
+
+  - name: Yum make cache to stop install failing with Errno 256
+    shell: yum makecache fast -y
+
+  - name: Install kubernetes tools
+    yum:
+      name: "{{ item }}"
+      state: present
+      validate_certs: no
+    with_items:
+      - kubelet
+      - kubeadm
+      - kubectl
+
+  - name: Copy k8s kernel config file
+    copy:
+      src: /vagrant/k8s.conf
+      dest: /etc/sysctl.d/k8s.conf
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Reload kernel configuration
+    shell: sysctl --system
+
+  - name: Reload systemd
+    shell: systemctl daemon-reload
+
+  - name: Restart kubelet
+    systemd:
+      name: kubelet
+      state: restarted
+
+  - name: Turn off swap
+    shell: swapoff -a
+
+  - name: Permanently disable swap
+    shell: |
+      cat /etc/fstab | grep -v swap > /etc/fstab.tmp
+      mv -f /etc/fstab.tmp /etc/fstab
+      chmod 0644 /etc/fstab
+      
+  - name: Download cfssl
+    get_url:
+      url: https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+      dest: /usr/bin/cfssl
+      mode: 0755
+      owner: root
+      group: root
+
+  - name: Download cfssl
+    get_url:
+      url: https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+      dest: /usr/bin/cfssljson
+      mode: 0755
+      owner: root
+      group: root
+
+  

@@ -1,0 +1,78 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Create config.json
+    shell: cfssl print-defaults csr > /etc/kubernetes/pki/etcd/config.json
+  
+  - name: Copy modify-confg-json script
+    copy:
+      src: /vagrant/modify-config-json.sh
+      dest: /usr/local/bin/modify-config-json.sh
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Dos2Unix modify-config-json.sh
+    shell: dos2unix /usr/local/bin/modify-config-json.sh
+      
+  - name: Run modify-config-json.sh
+    shell: /usr/local/bin/modify-config-json.sh
+
+  - name: Generate peer and server certs and keys
+    shell: |
+      chdir=/etc/kubernetes/pki/etcd
+      cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=server config.json | cfssljson -bare server
+      cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=peer config.json | cfssljson -bare peer
+
+  - name: Download etcd package
+    get_url: 
+      url: https://github.com/coreos/etcd/releases/download/v3.1.10/etcd-v3.1.10-linux-amd64.tar.gz
+      dest: /tmp/etcd-v3.1.10-linux-amd64.tar.gz
+
+  - name: Unpack etcd
+    shell: tar -xzvf /tmp/etcd-v3.1.10-linux-amd64.tar.gz --strip-components=1 -C /usr/local/bin/
+
+  - name: Copy create-etcd-env.sh
+    copy:
+      src: /vagrant/create-etcd-env.sh
+      dest: /usr/local/bin/create-etcd-env.sh
+      owner: root
+      group: root
+      mode: 0755
+      
+  - name: Run create-etcd-env.sh
+    shell: /usr/local/bin/create-etcd-env.sh
+
+  - name: Set PEER_NAME
+    shell: hostname
+    register: peer_name
+
+  - name: Set PRIVATE_IP
+    shell: ifconfig eth1 | grep 'inet ' | awk '{print $2}'
+    register: private_ip
+
+  - set_fact:
+      etcd_hostname: "{{ peer_name.stdout }}"
+      etcd_ip: "{{ private_ip.stdout }}"
+
+  - name: Copy etcd.service template
+    template:
+      src: /vagrant/etcd.service.j2
+      dest: /etc/systemd/system/etcd.service
+
+  - name: Install keepalived
+    yum:
+      name: keepalived
+      state: present
+
+  - name: Copy check_apiserver.sh 
+    copy:
+      src: /vagrant/check_apiserver.sh
+      dest: /etc/keepalived/check_apiserver.sh
+      owner: root
+      group: root
+      mode: 0755
+
+  
+  

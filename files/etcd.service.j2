@@ -1,0 +1,18 @@
+[Unit]
+Description=etcd
+Documentation=https://github.com/coreos/etcd
+Conflicts=etcd.service
+Conflicts=etcd2.service
+
+[Service]
+EnvironmentFile=/etc/etcd.env
+Type=notify
+Restart=always
+RestartSec=5s
+LimitNOFILE=40000
+TimeoutStartSec=0
+
+ExecStart=/usr/local/bin/etcd --name={{ etcd_hostname }} --data-dir=/var/lib/etcd --listen-client-urls=https://{{ etcd_ip }}:2379 --advertise-client-urls=https://{{ etcd_ip }}:2379 --listen-peer-urls=https://{{ etcd_ip }}:2380 --initial-advertise-peer-urls=https://{{ etcd_ip }}:2380 --cert-file=/etc/kubernetes/pki/etcd/server.pem --key-file=/etc/kubernetes/pki/etcd/server-key.pem --client-cert-auth --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.pem --peer-cert-file=/etc/kubernetes/pki/etcd/peer.pem --peer-key-file=/etc/kubernetes/pki/etcd/peer-key.pem --peer-client-cert-auth --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.pem --initial-cluster k8s-master1=https://192.168.34.11:2380,k8s-master2=https://192.168.34.12:2380,k8s-master3=https://192.168.34.13:2380 --initial-cluster-token=my-etcd-token --initial-cluster-state=new
+
+[Install]
+WantedBy=multi-user.target

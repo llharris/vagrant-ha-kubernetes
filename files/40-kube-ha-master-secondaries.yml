@@ -1,0 +1,16 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Create Directory
+    file:
+      path: /etc/kubernetes/pki/etcd
+      state: directory
+  
+  - name: Copy etcd cert files from master1
+    shell: |
+      scp -o StrictHostKeyChecking=no root@k8s-master1:/etc/kubernetes/pki/etcd/ca.pem /etc/kubernetes/pki/etcd/ca.pem
+      scp -o StrictHostKeyChecking=no root@k8s-master1:/etc/kubernetes/pki/etcd/ca-key.pem /etc/kubernetes/pki/etcd/ca-key.pem
+      scp -o StrictHostKeyChecking=no root@k8s-master1:/etc/kubernetes/pki/etcd/client.pem /etc/kubernetes/pki/etcd/client.pem
+      scp -o StrictHostKeyChecking=no root@k8s-master1:/etc/kubernetes/pki/etcd/client-key.pem /etc/kubernetes/pki/etcd/client-key.pem
+      scp -o StrictHostKeyChecking=no root@k8s-master1:/etc/kubernetes/pki/etcd/ca-config.json /etc/kubernetes/pki/etcd/ca-config.json

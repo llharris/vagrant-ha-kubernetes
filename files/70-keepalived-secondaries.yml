@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Copy keepalived.conf
+    copy:
+      src: /vagrant/keepalived-master2-3.conf
+      dest: /etc/keepalived/keepalived.conf
+      owner: root
+      group: root
+      mode: 0644

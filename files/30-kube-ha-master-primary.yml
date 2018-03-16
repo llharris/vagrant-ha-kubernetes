@@ -1,0 +1,48 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Create Directory
+    file:
+      path: /etc/kubernetes/pki/etcd
+      state: directory
+  
+  - name: Copy ca-config.json
+    copy:
+      src: /vagrant/ca-config.json
+      dest: /etc/kubernetes/pki/etcd/ca-config.json
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Copy ca-csr.json
+    copy:
+      src: /vagrant/ca-csr.json
+      dest: /etc/kubernetes/pki/etcd/ca-csr.json
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Generate CA Certs
+    shell: chdir=/etc/kubernetes/pki/etcd cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
+
+  - name: Copy client.json
+    copy:
+      src: /vagrant/client.json
+      dest: /etc/kubernetes/pki/etcd/client.json
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Generate etcd client certs
+    shell: chdir=/etc/kubernetes/pki/etcd cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=client client.json | cfssljson -bare client
+
+  - name: Check for presence of client.pem
+    stat:
+      path: /etc/kubernetes/pki/etcd/client.pem
+    register: client_pem
+
+  - name: Check for presenve of client-key.pem
+    stat:
+      path: /etc/kubernetes/pki/etcd/client-key.pem
+    register: client_key_pem
