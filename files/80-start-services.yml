@@ -12,6 +12,7 @@
     systemd:
       name: etcd
       state: started
+      no_block: yes
       enabled: True
 
   - name: Enable kubelet
