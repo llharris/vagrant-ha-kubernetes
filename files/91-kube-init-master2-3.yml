@@ -1,0 +1,20 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Make /etc/kubernetes/pki/etcd directory
+    file:
+      path: /etc/kubernetes/pki/etcd
+      state: directory
+
+  - name: Copy files from master1
+    shell: |
+      scp -o StrictHostKeyChecking=no root@k8s-master1:/etc/kubernetes/pki/etcd/ca.pem /etc/kubernetes/pki/etcd
+      scp -o StrictHostKeyChecking=no root@k8s-master1:/etc/kubernetes/pki/etcd/client.pem /etc/kubernetes/pki/etcd
+      scp -o StrictHostKeyChecking=no root@k8s-master1:/etc/kubernetes/pki/etcd/client-key.pem /etc/kubernetes/pki/etcd
+      scp -o StrictHostKeyChecking=no root@k8s-master1:/etc/kubernetes/pki/* /etc/kubernetes/pki
+  
+  - name: Run Kubeadm Init
+    shell: kubeadm init --config=/vagrant/config.yaml
+    ignore_errors: yes
+      

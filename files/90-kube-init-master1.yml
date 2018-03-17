@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Kubeadm init
+    shell: |
+      kubeadm init --config=/vagrant/config.yaml
+    ignore_errors: yes
+
+  - name: Configure kubelet access for vagrant user
+    shell: |
+      mkdir -p /home/vagrant/.kube
+      cp -f /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+      chown -R vagrant:vagrant /home/vagrant/.kube
+
+  
+
