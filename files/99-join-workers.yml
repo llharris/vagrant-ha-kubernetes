@@ -1,7 +1,0 @@
----
-- hosts: all
-  become: true
-  tasks:
-  - name: Join workers to cluster
-    shell: |
-      kubeadm join --token mydemo.0123456789abcdef 192.168.34.100:6443 --discovery-token-unsafe-skip-ca-verification

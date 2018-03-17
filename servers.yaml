@@ -36,8 +36,6 @@ vms:
       - name: 50-etcd-config.yml
       - name: 60-keepalived-master.yml
       - name: 80-start-services.yml
-      - name: 90-kubeadm-init-master1.yml
-      - name: 92-configure-cni.yml
   - name: k8s-master2
     cpu: 2
     ram: 2048
@@ -51,7 +49,6 @@ vms:
       - name: 50-etcd-config.yml
       - name: 70-keepalived-secondaries.yml
       - name: 80-start-services.yml
-      - name: 91-kubeadm-init-master2-3.yml
   - name: k8s-master3
     cpu: 2
     ram: 2048
@@ -65,7 +62,6 @@ vms:
       - name: 50-etcd-config.yml
       - name: 70-keepalived-secondaries.yml
       - name: 80-start-services.yml
-      - name: 91-kubeadm-init-master2-3.yml
   - name: k8s-worker1
     cpu: 1
     ram: 1024
@@ -75,7 +71,6 @@ vms:
       playbooks:
       - name: 10-base-config.yml
       - name: 20-kube-base-config.yml
-      - name: 99-join-workers.yml
   - name: k8s-worker2
     cpu: 1
     ram: 1024
@@ -85,7 +80,6 @@ vms:
       playbooks:
       - name: 10-base-config.yml
       - name: 20-kube-base-config.yml
-      - name: 99-join-workers.yml
   - name: k8s-worker3
     cpu: 1
     ram: 1024
@@ -95,7 +89,6 @@ vms:
       playbooks:
       - name: 10-base-config.yml
       - name: 20-kube-base-config.yml
-      - name: 99-join-workers.yml
 #  - name: la-k8s-haproxy
 #    cpu: 1
 #    ram: 1024
