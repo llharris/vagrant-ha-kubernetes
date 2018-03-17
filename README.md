@@ -21,6 +21,8 @@ We're using ansible_local as the vagrant provisioner. Each guest is provisioned 
 
 As such, things start to get a bit complicated towards the end where I want to run some operations in parallel. Essentially this just does all of the pre-reqs of setting up a HA k8s cluster. The last bit is currently a manual step which seems to be a bit hit and miss.
 
+Because this was thrown together quickly there's quite a bit of stuff that's hard coded. As such, don't try to change the IPs used or the guest hostnames unless you're prepared to go through all the files and change every reference.
+
 ### To-Do List
 
 * Add an ingress controller
